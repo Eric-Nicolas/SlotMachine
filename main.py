@@ -20,6 +20,7 @@ WATERMELON_IMG = pygame.image.load(os.path.join('assets', WATERMELON + '.png'))
 GOLDEN_APPLE_IMG = pygame.image.load(os.path.join('assets', GOLDEN_APPLE + '.png'))
 
 SLOT_IMG = pygame.image.load(os.path.join('assets', 'slot.png'))
+RED_CROSS_IMG = pygame.image.load(os.path.join('assets', 'red_cross.png'))
 
 IMAGES_ASSOCIATED = {
     ORANGE: ORANGE_IMG,
@@ -62,10 +63,20 @@ def has_same_value(seq: list) -> bool:
     return True
 
 
+def draw_crosses() -> None:
+    WIN.blit(RED_CROSS_IMG, LEFT)
+    WIN.blit(RED_CROSS_IMG, MIDDLE)
+    WIN.blit(RED_CROSS_IMG, RIGHT)
+
+
 def draw_fruits(fruits: list) -> None:
     WIN.blit(IMAGES_ASSOCIATED[fruits[0]], LEFT)
     WIN.blit(IMAGES_ASSOCIATED[fruits[1]], MIDDLE)
     WIN.blit(IMAGES_ASSOCIATED[fruits[2]], RIGHT)
+
+
+def draw_text(label: pygame.Surface) -> None:
+    WIN.blit(label, (WIDTH - label.get_width() - 10, HEIGHT - label.get_height() - 10))
 
 
 def main() -> None:
@@ -90,10 +101,12 @@ def main() -> None:
         WIN.fill(WHITE)
         WIN.blit(SLOT_IMG, (0, 0))
 
-        if random_fruits:  # if the list is not empty
+        if not random_fruits:  # if the list is empty
+            draw_crosses()
+        else:
             draw_fruits(random_fruits)
 
-        WIN.blit(tokens_label, (WIDTH - tokens_label.get_width() - 10, HEIGHT - tokens_label.get_height() - 10))
+        draw_text(tokens_label)
 
         pygame.display.update()
         CLOCK.tick(FPS)
