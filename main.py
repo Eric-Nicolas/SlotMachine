@@ -42,15 +42,17 @@ WIN: pygame.Surface = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Slot Machine")
 
 WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
 
-CLOCK = pygame.time.Clock()
-FPS = 60
+FONT = pygame.font.Font(None, 36)
 
 Y = HEIGHT // 2 + 56
-
 LEFT = (226, Y)
 MIDDLE = (327, Y)
 RIGHT = (428, Y)
+
+CLOCK = pygame.time.Clock()
+FPS = 60
 
 
 def has_same_value(seq: list) -> bool:
@@ -60,6 +62,12 @@ def has_same_value(seq: list) -> bool:
     return True
 
 
+def draw_fruits(fruits: list) -> None:
+    WIN.blit(IMAGES_ASSOCIATED[fruits[0]], LEFT)
+    WIN.blit(IMAGES_ASSOCIATED[fruits[1]], MIDDLE)
+    WIN.blit(IMAGES_ASSOCIATED[fruits[2]], RIGHT)
+
+
 def main() -> None:
     fruits = [ORANGE, CHERRY, PINEAPPLE, WATERMELON, GOLDEN_APPLE]
     random_fruits = []
@@ -67,6 +75,8 @@ def main() -> None:
 
     is_running = True
     while is_running:
+        tokens_label = FONT.render("Tokens: " + str(tokens), True, BLACK)
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -74,19 +84,16 @@ def main() -> None:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 # returns k elements of fruits; each item has a probability written in the weights parameter
                 random_fruits = random.choices(fruits, weights=(40, 25, 20, 10, 5), k=3)
-                print(random_fruits)
-
                 if has_same_value(random_fruits):
-                    print("3x " + random_fruits[0] + " - You win " + str(TOKENS_ASSOCIATED[random_fruits[0]]) + " tokens!")
                     tokens += TOKENS_ASSOCIATED[random_fruits[0]]
 
         WIN.fill(WHITE)
         WIN.blit(SLOT_IMG, (0, 0))
 
-        if random_fruits:
-            WIN.blit(IMAGES_ASSOCIATED[random_fruits[0]], LEFT)
-            WIN.blit(IMAGES_ASSOCIATED[random_fruits[1]], MIDDLE)
-            WIN.blit(IMAGES_ASSOCIATED[random_fruits[2]], RIGHT)
+        if random_fruits:  # if the list is not empty
+            draw_fruits(random_fruits)
+
+        WIN.blit(tokens_label, (WIDTH - tokens_label.get_width() - 10, HEIGHT - tokens_label.get_height() - 10))
 
         pygame.display.update()
         CLOCK.tick(FPS)
