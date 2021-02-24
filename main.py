@@ -10,12 +10,12 @@ pygame.init()
 FRUITS = ('orange', 'cherry', 'pineapple', 'watermelon', 'golden_apple')
 TOKENS = (5, 15, 50, 150, 10000)
 
+SLOT_IMG = pygame.image.load(os.path.join('assets', 'slot.png'))
+RED_CROSS_IMG = pygame.image.load(os.path.join('assets', 'red_cross.png'))
+
 IMAGES = []
 for fruit in FRUITS:
     IMAGES.append(pygame.image.load(os.path.join('assets', fruit + '.png')))
-
-SLOT_IMG = pygame.image.load(os.path.join('assets', 'slot.png'))
-RED_CROSS_IMG = pygame.image.load(os.path.join('assets', 'red_cross.png'))
 
 FRUITS_ASSOCIATED = {}
 for i in range(len(FRUITS)):
@@ -31,9 +31,7 @@ BLACK = (0, 0, 0)
 FONT = pygame.font.Font(None, 36)
 
 Y = HEIGHT // 2 + 56
-LEFT = (226, Y)
-MIDDLE = (327, Y)
-RIGHT = (428, Y)
+POSITIONS = ((226, Y), (327, Y), (428, Y))
 
 CLOCK = pygame.time.Clock()
 FPS = 60
@@ -47,15 +45,13 @@ def has_same_value(seq: list) -> bool:
 
 
 def draw_crosses() -> None:
-    WIN.blit(RED_CROSS_IMG, LEFT)
-    WIN.blit(RED_CROSS_IMG, MIDDLE)
-    WIN.blit(RED_CROSS_IMG, RIGHT)
+    for pos in POSITIONS:
+        WIN.blit(RED_CROSS_IMG, pos)
 
 
 def draw_fruits(fruits: list) -> None:
-    WIN.blit(FRUITS_ASSOCIATED[fruits[0]][0], LEFT)
-    WIN.blit(FRUITS_ASSOCIATED[fruits[1]][0], MIDDLE)
-    WIN.blit(FRUITS_ASSOCIATED[fruits[2]][0], RIGHT)
+    for index in range(len(POSITIONS)):
+        WIN.blit(FRUITS_ASSOCIATED[fruits[index]][0], POSITIONS[index])
 
 
 def draw_text(label: pygame.Surface) -> None:
