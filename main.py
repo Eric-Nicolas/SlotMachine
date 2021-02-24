@@ -7,36 +7,19 @@ __author__ = 'Eric-Nicolas'
 
 pygame.init()
 
-ORANGE = 'orange'
-CHERRY = 'cherry'
-PINEAPPLE = 'pineapple'
-WATERMELON = 'watermelon'
-GOLDEN_APPLE = 'golden_apple'
+FRUITS = ('orange', 'cherry', 'pineapple', 'watermelon', 'golden_apple')
+TOKENS = (5, 15, 50, 150, 10000)
 
-ORANGE_IMG = pygame.image.load(os.path.join('assets', ORANGE + '.png'))
-CHERRY_IMG = pygame.image.load(os.path.join('assets', CHERRY + '.png'))
-PINEAPPLE_IMG = pygame.image.load(os.path.join('assets', PINEAPPLE + '.png'))
-WATERMELON_IMG = pygame.image.load(os.path.join('assets', WATERMELON + '.png'))
-GOLDEN_APPLE_IMG = pygame.image.load(os.path.join('assets', GOLDEN_APPLE + '.png'))
+IMAGES = []
+for fruit in FRUITS:
+    IMAGES.append(pygame.image.load(os.path.join('assets', fruit + '.png')))
 
 SLOT_IMG = pygame.image.load(os.path.join('assets', 'slot.png'))
 RED_CROSS_IMG = pygame.image.load(os.path.join('assets', 'red_cross.png'))
 
-IMAGES_ASSOCIATED = {
-    ORANGE: ORANGE_IMG,
-    CHERRY: CHERRY_IMG,
-    PINEAPPLE: PINEAPPLE_IMG,
-    WATERMELON: WATERMELON_IMG,
-    GOLDEN_APPLE: GOLDEN_APPLE_IMG
-}
-
-TOKENS_ASSOCIATED = {
-    ORANGE: 5,
-    CHERRY: 15,
-    PINEAPPLE: 50,
-    WATERMELON: 150,
-    GOLDEN_APPLE: 10000
-}
+FRUITS_ASSOCIATED = {}
+for i in range(len(FRUITS)):
+    FRUITS_ASSOCIATED[FRUITS[i]] = (IMAGES[i], TOKENS[i])
 
 WIDTH, HEIGHT = 800, 400
 WIN: pygame.Surface = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -57,8 +40,8 @@ FPS = 60
 
 
 def has_same_value(seq: list) -> bool:
-    for i in seq:
-        if i != seq[0]:
+    for item in seq:
+        if item != seq[0]:
             return False
     return True
 
@@ -70,9 +53,9 @@ def draw_crosses() -> None:
 
 
 def draw_fruits(fruits: list) -> None:
-    WIN.blit(IMAGES_ASSOCIATED[fruits[0]], LEFT)
-    WIN.blit(IMAGES_ASSOCIATED[fruits[1]], MIDDLE)
-    WIN.blit(IMAGES_ASSOCIATED[fruits[2]], RIGHT)
+    WIN.blit(FRUITS_ASSOCIATED[fruits[0]][0], LEFT)
+    WIN.blit(FRUITS_ASSOCIATED[fruits[1]][0], MIDDLE)
+    WIN.blit(FRUITS_ASSOCIATED[fruits[2]][0], RIGHT)
 
 
 def draw_text(label: pygame.Surface) -> None:
@@ -80,7 +63,6 @@ def draw_text(label: pygame.Surface) -> None:
 
 
 def main() -> None:
-    fruits = [ORANGE, CHERRY, PINEAPPLE, WATERMELON, GOLDEN_APPLE]
     random_fruits = []
     tokens = 0
 
@@ -94,9 +76,9 @@ def main() -> None:
                 quit()
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 # returns k elements of fruits; each item has a probability written in the weights parameter
-                random_fruits = random.choices(fruits, weights=(40, 25, 20, 10, 5), k=3)
+                random_fruits = random.choices(FRUITS, weights=(40, 25, 20, 10, 5), k=3)
                 if has_same_value(random_fruits):
-                    tokens += TOKENS_ASSOCIATED[random_fruits[0]]
+                    tokens += FRUITS_ASSOCIATED[random_fruits[0]][1]
 
         WIN.fill(WHITE)
         WIN.blit(SLOT_IMG, (0, 0))
